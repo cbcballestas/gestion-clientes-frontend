@@ -1,0 +1,16 @@
+<div
+  class="alert alert-danger alert-dismissible fade show"
+  role="alert"
+  *ngIf="flag"
+>
+  <h4 class="alert-heading">Aviso</h4>
+  <ul>
+    <li *ngFor="let error of errors">{{ error }}</li>
+  </ul>
+  <button
+    type="button"
+    class="btn-close"
+    data-bs-dismiss="alert"
+    aria-label="Close"
+  ></button>
+</div>

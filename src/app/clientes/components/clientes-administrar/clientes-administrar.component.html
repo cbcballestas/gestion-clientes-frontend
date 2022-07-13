@@ -1,0 +1,101 @@
+<div class="card border-dark mb-3 mt-3">
+  <div class="card-header">{{ titulo }}</div>
+  <div class="card-body text-dark">
+    <!-- Lista de errores -->
+    <app-form-error></app-form-error>
+
+    <!-- Formulario para gestión de clientes -->
+    <form class="row g-3" [formGroup]="form" (ngSubmit)="procesar()">
+      <div class="col-12">
+        <label for="nombres" class="form-label">Nombre</label>
+        <input
+          type="text"
+          formControlName="nombre"
+          class="form-control"
+          id="nombres"
+          [ngClass]="{
+            'ng-invalid ng-dirty is-invalid':
+              nombre.invalid && (nombre.dirty || nombre.touched)
+          }"
+          autocomplete="off"
+          required
+        />
+
+        <div *ngIf="nombre.invalid && (nombre.dirty || nombre.touched)">
+          <span *ngIf="nombre.errors?.['required']" class="text-danger">
+            Nombre es obligatorio
+          </span>
+          <span *ngIf="nombre.errors?.['minlength']" class="text-danger">
+            El nombre DEBE tener al menos 3 caracteres
+          </span>
+        </div>
+      </div>
+      <div class="col-12">
+        <label for="apellidos" class="form-label">Apellido</label>
+        <input
+          type="text"
+          formControlName="apellido"
+          class="form-control"
+          [ngClass]="{
+            'ng-invalid ng-dirty is-invalid':
+              apellido.invalid && (apellido.dirty || apellido.touched)
+          }"
+          autocomplete="off"
+          id="apellidos"
+          required
+        />
+
+        <div *ngIf="apellido.invalid && (apellido.dirty || apellido.touched)">
+          <span class="text-danger" *ngIf="apellido.errors?.['required']">
+            Apellido es requerido
+          </span>
+          <span *ngIf="apellido.errors?.['minlength']" class="text-danger">
+            El apellido DEBE tener al menos 4 caracteres
+          </span>
+        </div>
+      </div>
+      <div class="col-md-12">
+        <label for="correo" class="form-label">Email</label>
+        <input
+          type="email"
+          [ngClass]="{
+            'ng-invalid ng-dirty is-invalid':
+              email.invalid && (email.dirty || email.touched)
+          }"
+          autocomplete="off"
+          formControlName="email"
+          class="form-control"
+          id="correo"
+          required
+        />
+
+        <div *ngIf="email.invalid && (email.dirty || email.touched)">
+          <small class="text-danger" *ngIf="email.errors?.['required']">
+            Email es requerido
+          </small>
+          <small class="text-danger" *ngIf="email.errors?.['pattern']">
+            DEBE ingresar un email válido
+          </small>
+        </div>
+      </div>
+      <div class="col-12">
+        <button
+          type="submit"
+          class="btn btn-primary"
+          *ngIf="!edicion"
+          [disabled]="form.invalid"
+        >
+          Guardar
+        </button>
+        <button
+          type="submit"
+          class="btn btn-primary"
+          *ngIf="edicion"
+          [disabled]="form.invalid"
+        >
+          Actualizar
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
