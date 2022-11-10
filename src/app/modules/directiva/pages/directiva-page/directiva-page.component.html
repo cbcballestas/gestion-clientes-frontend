@@ -1,0 +1,16 @@
+<h1>{{ title }}</h1>
+<button
+  type="button"
+  (click)="cambiarEstado()"
+  class="btn btn-primary my-3"
+>
+  {{ habilitar ? "Ocultar" : "Mostrar" }}
+</button>
+<div class="card">
+  <div class="card-header">Tecnologías curso</div>
+  <ul class="list-group list-group-flush" *ngIf="habilitar">
+    <li class="list-group-item" *ngFor="let item of tecnologias">
+      {{ item }}
+    </li>
+  </ul>
+</div>

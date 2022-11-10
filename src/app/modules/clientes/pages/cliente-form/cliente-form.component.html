@@ -1,0 +1,85 @@
+<div class="card bg-dark text-white my-2">
+  <div class="card-header">
+    {{ titulo }}
+  </div>
+  <div class="card-body">
+    <form class="row g-3" [formGroup]="form">
+      <div class="col-6">
+        <label class="form-label">Nombre:</label>
+        <input
+          type="text"
+          formControlName="nombre"
+          class="form-control"
+          id="nombre"
+          [ngClass]="{
+            'ng-invalid ng-dirty is-invalid':
+              nombre.invalid && (nombre.dirty || nombre.touched)
+          }"
+          autocomplete="off"
+          required
+        />
+        <div *ngIf="nombre.invalid && (nombre.dirty || nombre.touched)">
+          <span *ngIf="nombre.errors?.['required']" class="text-danger">
+            Nombre es obligatorio
+          </span>
+        </div>
+      </div>
+      <div class="col-6">
+        <label class="form-label">Apellidos:</label>
+        <input
+          type="text"
+          formControlName="apellido"
+          id="apellido"
+          [ngClass]="{
+            'ng-invalid ng-dirty is-invalid':
+              apellido.invalid && (apellido.dirty || apellido.touched)
+          }"
+          autocomplete="off"
+          required
+          class="form-control"
+        />
+
+        <div *ngIf="apellido.invalid && (apellido.dirty || apellido.touched)">
+          <span *ngIf="apellido.errors?.['required']" class="text-danger">
+            Apellido es obligatorio
+          </span>
+        </div>
+      </div>
+      <div class="col-12">
+        <label class="form-label">Email:</label>
+        <input
+          type="email"
+          formControlName="email"
+          id="email"
+          [ngClass]="{
+            'ng-invalid ng-dirty is-invalid':
+              email.invalid && (email.dirty || email.touched)
+          }"
+          autocomplete="off"
+          required
+          class="form-control"
+          class="form-control"
+        />
+
+        <div *ngIf="email.invalid && (email.dirty || email.touched)">
+          <span *ngIf="email?.errors?.['required']" class="text-danger">
+            Email es obligatorio
+          </span>
+          <span *ngIf="email.errors?.['pattern']" class="text-danger">
+            Debe ingresar un email válido
+          </span>
+        </div>
+      </div>
+      <div class="col">
+        <button
+          type="button"
+          class="btn btn-primary"
+          (click)="procesar()"
+          [disabled]="form.invalid"
+        >
+          {{ edicion ? "Actualizar" : "Guardar" }}
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

@@ -1,0 +1,81 @@
+import { Cliente } from '@core/models';
+
+export const CLIENTES: Cliente[] = [
+  {
+    id: 1,
+    nombre: 'Carlos',
+    apellido: 'Ballestas',
+    email: 'carlos@gmail.com',
+    createdAt: '2022-11-06',
+  },
+  {
+    id: 2,
+    nombre: 'Andres',
+    apellido: 'Mendoza',
+    email: 'andres@gmail.com',
+    createdAt: '2022-11-07',
+  },
+  {
+    id: 3,
+    nombre: 'José',
+    apellido: 'Rodríguez',
+    email: 'jose@gmail.com',
+    createdAt: '2022-11-08',
+  },
+  {
+    id: 4,
+    nombre: 'Marlon',
+    apellido: 'Brans',
+    email: 'marlon@gmail.com',
+    createdAt: '2022-11-09',
+  },
+  {
+    id: 5,
+    nombre: 'Andrea',
+    apellido: 'López',
+    email: 'andrea@gmail.com',
+    createdAt: '2022-11-10',
+  },
+  {
+    id: 6,
+    nombre: 'Ana',
+    apellido: 'Alvarado',
+    email: 'ana@gmail.com',
+    createdAt: '2022-11-11',
+  },
+  {
+    id: 7,
+    nombre: 'Alva',
+    apellido: 'Pereira',
+    email: 'alva@gmail.com',
+    createdAt: '2022-11-12',
+  },
+  {
+    id: 8,
+    nombre: 'Manuela',
+    apellido: 'Beltrán',
+    email: 'manuela@gmail.com',
+    createdAt: '2022-11-13',
+  },
+  {
+    id: 9,
+    nombre: 'Lucas',
+    apellido: 'Pratto',
+    email: 'lucas@gmail.com',
+    createdAt: '2022-11-14',
+  },
+  {
+    id: 10,
+    nombre: 'Rafael',
+    apellido: 'Borré',
+    email: 'rafael@gmail.com',
+    createdAt: '2022-11-15',
+  },
+  {
+    id: 11,
+    nombre: 'Mariana',
+    apellido: 'Gómez',
+    email: 'mariana@gmail.com',
+    createdAt: '2022-11-16',
+  },
+];
