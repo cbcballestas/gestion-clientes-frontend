@@ -4,6 +4,9 @@
   </div>
   <div class="card-body">
     <form class="row g-3" [formGroup]="form">
+      <div class="col-12">
+        <app-form-errors></app-form-errors>
+      </div>
       <div class="col-6">
         <label class="form-label">Nombre:</label>
         <input
@@ -16,11 +19,19 @@
               nombre.invalid && (nombre.dirty || nombre.touched)
           }"
           autocomplete="off"
+          minlength="4"
+          maxlength="60"
           required
         />
         <div *ngIf="nombre.invalid && (nombre.dirty || nombre.touched)">
           <span *ngIf="nombre.errors?.['required']" class="text-danger">
             Nombre es obligatorio
+          </span>
+          <span *ngIf="nombre.errors?.['minlength']" class="text-danger">
+            Nombre debe tener mínimo 4 caracteres
+          </span>
+          <span *ngIf="nombre.errors?.['maxlength']" class="text-danger">
+            Nombre debe tener máximo 60 caracteres
           </span>
         </div>
       </div>
@@ -29,6 +40,7 @@
         <input
           type="text"
           formControlName="apellido"
+          class="form-control"
           id="apellido"
           [ngClass]="{
             'ng-invalid ng-dirty is-invalid':
@@ -36,7 +48,6 @@
           }"
           autocomplete="off"
           required
-          class="form-control"
         />
 
         <div *ngIf="apellido.invalid && (apellido.dirty || apellido.touched)">
@@ -45,11 +56,49 @@
           </span>
         </div>
       </div>
-      <div class="col-12">
+      <div class="col-6">
+        <label class="form-label">Fecha nacimiento:</label>
+        <div class="col-12">
+          <input
+            matInput
+            [matDatepicker]="picker"
+            formControlName="fechaNacimiento"
+            class="form-control"
+            style="display: inline !important; width: fit-content"
+            required
+            [ngClass]="{
+              'ng-invalid ng-dirty is-invalid':
+                fechaNacimiento.invalid &&
+                (fechaNacimiento.dirty || fechaNacimiento.touched)
+            }"
+          />
+          <mat-datepicker-toggle
+            matSuffix
+            [for]="picker"
+          ></mat-datepicker-toggle>
+          <mat-datepicker #picker></mat-datepicker>
+        </div>
+
+        <div
+          *ngIf="
+            fechaNacimiento.invalid &&
+            (fechaNacimiento.dirty || fechaNacimiento.touched)
+          "
+        >
+          <span
+            *ngIf="fechaNacimiento.errors?.['required']"
+            class="text-danger"
+          >
+            Fecha nacimiento es obligatoria
+          </span>
+        </div>
+      </div>
+      <div class="col-6">
         <label class="form-label">Email:</label>
         <input
           type="email"
           formControlName="email"
+          class="form-control"
           id="email"
           [ngClass]="{
             'ng-invalid ng-dirty is-invalid':
@@ -57,8 +106,6 @@
           }"
           autocomplete="off"
           required
-          class="form-control"
-          class="form-control"
         />
 
         <div *ngIf="email.invalid && (email.dirty || email.touched)">
