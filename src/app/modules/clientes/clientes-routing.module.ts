@@ -10,6 +10,12 @@ const routes: Routes = [
       {
         path: '',
         component: ClientesListComponent,
+        title: 'AngularApp - Listado de Clientes',
+      },
+      {
+        path: 'page/:page',
+        component: ClientesListComponent,
+        title: 'AngularApp - Listado de Clientes',
       },
       {
         path: 'nuevo',

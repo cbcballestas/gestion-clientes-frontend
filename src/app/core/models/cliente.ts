@@ -4,6 +4,6 @@ export class Cliente {
     public nombre: string,
     public apellido: string,
     public email: string,
-    public createdAt?: string
+    public fechaNacimiento: string
   ) {}
 }

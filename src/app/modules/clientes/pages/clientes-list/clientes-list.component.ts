@@ -4,6 +4,8 @@ import Swal from 'sweetalert2';
 
 import { Cliente } from '@core/models';
 import { ClienteService } from '@modules/clientes/services/cliente.service';
+import { ActivatedRoute } from '@angular/router';
+import { PaginatedResponse } from '@core/interfaces';
 
 @Component({
   selector: 'app-clientes-list',
@@ -11,15 +13,27 @@ import { ClienteService } from '@modules/clientes/services/cliente.service';
 })
 export class ClientesListComponent implements OnInit, OnDestroy {
   clientes: Cliente[] = [];
-  subscriptions = new Subscription();
+  private _subscriptions = new Subscription();
 
-  constructor(private _clienteService: ClienteService) {}
+  paginador!: PaginatedResponse<Cliente>;
+
+  constructor(
+    private _clienteService: ClienteService,
+    private _route: ActivatedRoute
+  ) {}
 
   ngOnInit(): void {
-    this.subscriptions.add(
-      this._clienteService
-        .getCustomers()
-        .subscribe((data) => (this.clientes = data))
+    this._subscriptions.add(
+      this._route.params.subscribe(({ page }) => {
+        if (!page) {
+          page = 0;
+        }
+
+        this._clienteService.getCustomers(page).subscribe((response) => {
+          this.clientes = response.data;
+          this.paginador = response;
+        });
+      })
     );
   }
 
@@ -35,7 +49,7 @@ export class ClientesListComponent implements OnInit, OnDestroy {
       cancelButtonText: 'No',
     }).then((result) => {
       if (result.isConfirmed) {
-        this.subscriptions.add(
+        this._subscriptions.add(
           this._clienteService.deleteCustomerById(cliente.id).subscribe(() => {
             this.clientes.splice(indice, 1);
             Swal.fire(
@@ -50,6 +64,6 @@ export class ClientesListComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    this.subscriptions.unsubscribe();
+    this._subscriptions.unsubscribe();
   }
 }

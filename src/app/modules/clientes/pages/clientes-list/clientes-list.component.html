@@ -13,14 +13,17 @@
       </button>
     </div>
 
-    <table class="table table-hover" *ngIf="clientes!.length > 0; else sinClientesBlock">
+    <table
+      class="table table-hover"
+      *ngIf="clientes!.length > 0; else sinClientesBlock"
+    >
       <thead class="table-dark">
         <tr>
           <th scope="col">#</th>
           <th scope="col">Nombre</th>
           <th scope="col">Apellido</th>
           <th scope="col">Email</th>
-          <th scope="col">Fecha</th>
+          <th scope="col">Fecha Nacimiento</th>
           <th scope="col">Acciones</th>
         </tr>
       </thead>
@@ -30,13 +33,13 @@
           <td>{{ item.nombre }}</td>
           <td>{{ item.apellido }}</td>
           <td>{{ item.email }}</td>
-          <td>{{ item.createdAt }}</td>
+          <td>{{ item.fechaNacimiento | date: "EEEE dd, MMMM yyyy" }}</td>
           <td class="row">
             <div class="col">
               <button
                 type="button"
                 class="btn btn-warning"
-                [routerLink]="['editar', item.id]"
+                [routerLink]="['/clientes/editar', item.id]"
                 title="Editar"
               >
                 <i class="fa fa-pencil" aria-hidden="true"></i>
@@ -57,12 +60,14 @@
       </tbody>
     </table>
 
+    <div class="text-center">
+      <app-paginator *ngIf="paginador" [paginador]="paginador"></app-paginator>
+    </div>
+
     <ng-template #sinClientesBlock>
       <div class="alert alert-info" role="alert">
         <h4 class="alert-heading">Aviso!</h4>
-        <p>
-          No se encuentran clientes registrados!
-        </p>
+        <p>No se encuentran clientes registrados!</p>
       </div>
     </ng-template>
   </div>

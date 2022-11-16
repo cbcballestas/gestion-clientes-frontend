@@ -1,12 +1,12 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { catchError, EMPTY, of, switchMap, Subscription } from 'rxjs';
+import { EMPTY, switchMap, Subscription } from 'rxjs';
 import Swal from 'sweetalert2';
+import * as moment from 'moment';
 
 import { Cliente } from '@core/models';
 import { ClienteService } from '@modules/clientes/services/cliente.service';
-import { HttpErrorResponse } from '@core/interfaces';
 
 @Component({
   selector: 'app-cliente-form',
@@ -17,11 +17,14 @@ export class ClienteFormComponent implements OnInit, OnDestroy {
   edicion: boolean = false;
   id!: number;
 
-  subscriptions = new Subscription();
+  private _subscriptions$ = new Subscription();
 
   form = this._fb.nonNullable.group({
     id: [0],
-    nombre: ['', [Validators.required]],
+    nombre: [
+      '',
+      [Validators.required, Validators.minLength(4), Validators.maxLength(60)],
+    ],
     apellido: ['', [Validators.required]],
     email: [
       '',
@@ -30,6 +33,7 @@ export class ClienteFormComponent implements OnInit, OnDestroy {
         Validators.pattern('[A-Za-z0-9._%-]+@[A-Za-z0-9._%-]+\\.[a-z]{2,3}'),
       ],
     ],
+    fechaNacimiento: ['', [Validators.required]],
   });
 
   constructor(
@@ -40,31 +44,21 @@ export class ClienteFormComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit(): void {
-    this._route.params.subscribe(({ id }) => {
-      if (id) {
-        this.titulo = 'Editar Cliente';
-        this.edicion = true;
-        this.id = id;
+    this._subscriptions$.add(
+      this._route.params.subscribe(({ id }) => {
+        if (id) {
+          this.titulo = 'Editar Cliente';
+          this.edicion = true;
+          this.id = id;
 
-        //Se realiza la búsqueda del cliente por el ID suministrado
-        this.subscriptions.add(
+          //Se realiza la búsqueda del cliente por el ID suministrado
+
           this._clienteService
             .getCustomerById(id)
-            .pipe(
-              catchError((error: HttpErrorResponse) => {
-                this._router.navigateByUrl('/clientes');
-                Swal.fire({
-                  icon: 'error',
-                  title: 'Error',
-                  text: `${error.error.mensaje}`,
-                });
-                return EMPTY;
-              })
-            )
-            .subscribe((cliente) => this._loadFormValues(cliente))
-        );
-      }
-    });
+            .subscribe((cliente) => this._loadFormValues(cliente));
+        }
+      })
+    );
   }
 
   procesar(): void {
@@ -73,8 +67,12 @@ export class ClienteFormComponent implements OnInit, OnDestroy {
       return;
     }
 
+    this.form.controls.fechaNacimiento.setValue(
+      moment(this.form.controls.fechaNacimiento.value).format('YYYY-MM-DD')
+    );
+
     if (this.edicion) {
-      this.subscriptions.add(
+      this._subscriptions$.add(
         this._clienteService
           .updateCustomerData(this.id, this.form.getRawValue())
           .pipe(
@@ -91,7 +89,7 @@ export class ClienteFormComponent implements OnInit, OnDestroy {
           .subscribe()
       );
     } else {
-      this.subscriptions.add(
+      this._subscriptions$.add(
         this._clienteService
           .saveCustomerData(this.form.getRawValue())
           .pipe(
@@ -116,6 +114,7 @@ export class ClienteFormComponent implements OnInit, OnDestroy {
       nombre: cliente.nombre,
       apellido: cliente.apellido,
       email: cliente.email,
+      fechaNacimiento: cliente.fechaNacimiento,
     });
   }
 
@@ -128,8 +127,11 @@ export class ClienteFormComponent implements OnInit, OnDestroy {
   get email() {
     return this.form.controls.email;
   }
+  get fechaNacimiento() {
+    return this.form.controls.fechaNacimiento;
+  }
 
   ngOnDestroy(): void {
-    this.subscriptions.unsubscribe();
+    this._subscriptions$.unsubscribe();
   }
 }

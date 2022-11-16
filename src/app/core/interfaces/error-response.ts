@@ -13,6 +13,7 @@ export interface Error {
   fecha: string;
   mensaje: string;
   urlRecurso: string;
+  errores?: string[];
 }
 
 export interface Headers {

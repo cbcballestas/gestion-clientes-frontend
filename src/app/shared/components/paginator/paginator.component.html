@@ -1,0 +1,60 @@
+<ul *ngIf="paginas.length > 0" class="pagination justify-content-center">
+  <!-- Página anterior-->
+  <li class="page-item" *ngIf="paginador.number > 0">
+    <a class="page-link" [routerLink]="['/clientes/page', paginador.number - 1]"
+      >&laquo;</a
+    >
+  </li>
+
+  <!-- Primera página -->
+  <li
+    class="page-item"
+    [ngClass]="{
+      'disabled page-item': paginador.first,
+      'page-item': !paginador.first
+    }"
+  >
+    <a class="page-link" [routerLink]="['/clientes/page', 0]">Primera</a>
+  </li>
+
+  <!-- Listado de páginas -->
+  <li
+    *ngFor="let pagina of paginas"
+    class="page-item"
+    [ngClass]="{
+      active: pagina - 1 == paginador.number
+    }"
+  >
+    <span class="page-link" *ngIf="pagina - 1 == paginador.number">{{
+      pagina
+    }}</span>
+    <a
+      *ngIf="pagina - 1 != paginador.number"
+      class="page-link"
+      [routerLink]="['/clientes/page', pagina - 1]"
+      >{{ pagina }}</a
+    >
+  </li>
+
+  <!-- Última página -->
+  <li
+    class="page-item"
+    [ngClass]="{
+      'disabled page-item': paginador.last,
+      'page-item': !paginador.last
+    }"
+  >
+    <a
+      class="page-link"
+      [routerLink]="['/clientes/page', paginador.totalPages - 1]"
+      >Última</a
+    >
+  </li>
+
+  <!-- Página siguiente -->
+  <li class="page-item" *ngIf="paginador.number < paginador.totalPages - 1">
+    <a class="page-link" [routerLink]="['/clientes/page', paginador.number + 1]"
+      >&raquo;</a
+    >
+  </li>
+</ul>
