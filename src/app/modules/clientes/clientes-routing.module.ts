@@ -1,7 +1,9 @@
-import { ClienteFormComponent } from './pages/cliente-form/cliente-form.component';
-import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
+import { NgModule } from '@angular/core';
+
+import { ClienteFormComponent } from './pages/cliente-form/cliente-form.component';
 import { ClientesListComponent } from './pages/clientes-list/clientes-list.component';
+import { ClienteDetailComponent } from './pages/cliente-detail/cliente-detail.component';
 
 const routes: Routes = [
   {
@@ -26,6 +28,11 @@ const routes: Routes = [
         path: 'editar/:id',
         component: ClienteFormComponent,
         title: 'AngularApp - Editar Cliente',
+      },
+      {
+        path: 'detalle/:id',
+        component: ClienteDetailComponent,
+        title: 'AngularApp - Detalle Cliente',
       },
     ],
   },

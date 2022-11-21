@@ -10,9 +10,11 @@ import { ClientesListComponent } from './pages/clientes-list/clientes-list.compo
 import { ClienteFormComponent } from './pages/cliente-form/cliente-form.component';
 import { FormErrorsModule } from '@shared/components/form-errors/form-errors.module';
 import { PaginatorModule } from '@shared/components/paginator/paginator.module';
+import { ClienteDetailComponent } from './pages/cliente-detail/cliente-detail.component';
+import { ProfilePhotoPipe } from './pipes/profile-photo.pipe';
 
 @NgModule({
-  declarations: [ClientesListComponent, ClienteFormComponent],
+  declarations: [ClientesListComponent, ClienteFormComponent, ClienteDetailComponent, ProfilePhotoPipe],
   imports: [
     CommonModule,
     ClientesRoutingModule,
