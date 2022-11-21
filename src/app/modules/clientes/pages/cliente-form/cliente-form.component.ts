@@ -33,7 +33,8 @@ export class ClienteFormComponent implements OnInit, OnDestroy {
         Validators.pattern('[A-Za-z0-9._%-]+@[A-Za-z0-9._%-]+\\.[a-z]{2,3}'),
       ],
     ],
-    fechaNacimiento: ['', [Validators.required]],
+    fechaNacimiento: ['', [Validators.required],],
+    foto: [undefined],
   });
 
   constructor(

@@ -6,7 +6,11 @@ import { environment } from 'src/environments/environment';
 import Swal from 'sweetalert2';
 
 import { Cliente } from '@core/models';
-import { HttpErrorResponse, PaginatedResponse } from '@core/interfaces';
+import {
+  HttpErrorResponse,
+  PaginatedResponse,
+  UploadedProfilePhotoDTO,
+} from '@core/interfaces';
 import { FormErrorService } from '@core/services/form-error.service';
 
 @Injectable({
@@ -92,6 +96,33 @@ export class ClienteService {
             text: `${error.mensaje}`,
           });
           console.error(error.mensaje);
+          return EMPTY;
+        })
+      );
+  }
+
+  uploadProfilePhoto(
+    archivo: File,
+    id: number
+  ): Observable<UploadedProfilePhotoDTO> {
+    let formData: FormData = new FormData();
+
+    // Se asignan los valores requeridos por el API
+    formData.append('archivo', archivo);
+    formData.append('id', '' + id);
+
+    return this._http
+      .post<UploadedProfilePhotoDTO>(
+        `${environment.API_URL}/clientes/upload`,
+        formData
+      )
+      .pipe(
+        catchError(({ error }: HttpErrorResponse) => {
+          Swal.fire({
+            icon: 'error',
+            title: 'Error',
+            text: `${error.mensaje}`,
+          });
           return EMPTY;
         })
       );
