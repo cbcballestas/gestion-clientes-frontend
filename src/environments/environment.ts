@@ -5,6 +5,7 @@
 export const environment = {
   production: false,
   API_URL: 'http://localhost:8088/api/v1',
+  STATIC_RESOURCES_URL: 'http://localhost:8088',
 };
 
 /*

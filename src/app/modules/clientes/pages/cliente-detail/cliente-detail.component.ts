@@ -1,55 +1,52 @@
-import { ActivatedRoute } from '@angular/router';
 import {
   Component,
   OnInit,
   OnDestroy,
   ViewChild,
   ElementRef,
+  OnChanges,
+  SimpleChanges,
 } from '@angular/core';
 import { Subscription } from 'rxjs';
+import { HttpEventType } from '@angular/common/http';
 import Swal from 'sweetalert2';
 
 import { Cliente } from '@core/models';
 import { ClienteService } from '@modules/clientes/services/cliente.service';
+import { ModalDetalleClienteService } from '@modules/clientes/services/modal-detalle-cliente.service';
 
 @Component({
   selector: 'app-cliente-detail',
   templateUrl: './cliente-detail.component.html',
   styleUrls: ['./cliente-detail.component.css'],
 })
-export class ClienteDetailComponent implements OnInit, OnDestroy {
+export class ClienteDetailComponent implements OnInit, OnDestroy, OnChanges {
   @ViewChild('foto') input!: ElementRef;
 
-  cliente!: Cliente;
-
+  cliente?: Cliente;
   archivoSeleccionado: File | null = null;
+  progreso: number = 0;
 
   private _subscriptions: Subscription = new Subscription();
-  private _id!: number;
 
   titulo: string = 'Detalle cliente';
 
   constructor(
     private _clienteService: ClienteService,
-    private _route: ActivatedRoute
+    public modalDetalleClienteService: ModalDetalleClienteService
   ) {}
 
-  ngOnInit(): void {
-    this._subscriptions.add(
-      this._route.params.subscribe((data) => {
-        this._id = data['id'];
+  ngOnChanges(changes: SimpleChanges): void {
+    console.log(changes);
+  }
 
-        if (this._id) {
-          this._clienteService.getCustomerById(this._id).subscribe((data) => {
-            this.cliente = data;
-          });
-        }
-      })
-    );
+  ngOnInit(): void {
+    this._loadCustomerData();
   }
 
   onSelectFile() {
     this.archivoSeleccionado = this.input.nativeElement.files[0];
+    this.progreso = 0;
     if (this.archivoSeleccionado!.type.indexOf('image') < 0) {
       Swal.fire({
         icon: 'error',
@@ -72,21 +69,51 @@ export class ClienteDetailComponent implements OnInit, OnDestroy {
     }
 
     this._clienteService
-      .uploadProfilePhoto(this.archivoSeleccionado!, this._id)
-      .subscribe((data) => {
-        this.cliente = data.cliente;
-        Swal.fire({
-          icon: 'success',
-          title: 'Archivo cargado',
-          text: `${data.mensaje}: ${this.cliente.foto}`,
-        });
+      .uploadProfilePhoto(this.archivoSeleccionado!, this.cliente!.id)
+      .subscribe((event) => {
+        /**
+         * HttpEventType.UploadProgress: para mostrar el progreso de la carga del archivo
+         * HttpEventType.Response: para verificar si ya terminó la carga del archivo
+         */
+
+        switch (event.type) {
+          case HttpEventType.UploadProgress:
+            this.progreso = event.total
+              ? Math.round((100 * event.loaded) / event.total)
+              : 100;
+            break;
+
+          case HttpEventType.Response:
+            this.cliente = event.body?.cliente;
+            Swal.fire({
+              icon: 'success',
+              title: 'Archivo cargado',
+              text: `${event.body?.mensaje}: ${this.cliente?.foto}`,
+            });
+            this._clienteService.notifiyCustomerList(this.cliente!);
+            break;
+        }
+
         this._resetFileInput();
       });
+  }
+
+  closeCustomerDetailModal(): void {
+    this.modalDetalleClienteService.closeModal();
+    this.modalDetalleClienteService.setCustomerModalData(null);
+    this.progreso = 0;
+    this._resetFileInput();
   }
 
   private _resetFileInput(): void {
     this.archivoSeleccionado = null;
     this.input.nativeElement.value = null;
+  }
+
+  private _loadCustomerData(): void {
+    this.modalDetalleClienteService.cliente$.subscribe(
+      (data) => (this.cliente = data!)
+    );
   }
 
   ngOnDestroy(): void {

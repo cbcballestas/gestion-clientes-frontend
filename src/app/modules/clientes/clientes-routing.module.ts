@@ -29,11 +29,6 @@ const routes: Routes = [
         component: ClienteFormComponent,
         title: 'AngularApp - Editar Cliente',
       },
-      {
-        path: 'detalle/:id',
-        component: ClienteDetailComponent,
-        title: 'AngularApp - Detalle Cliente',
-      },
     ],
   },
 ];

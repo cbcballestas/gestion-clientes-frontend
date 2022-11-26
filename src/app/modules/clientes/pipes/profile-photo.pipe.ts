@@ -6,8 +6,11 @@ import { environment } from 'src/environments/environment';
 })
 export class ProfilePhotoPipe implements PipeTransform {
   private _endpointUrl = `${environment.API_URL}/clientes/img`;
+  private _staticResourceUrl = `${environment.STATIC_RESOURCES_URL}`;
 
   transform(value?: string): string {
-    return `${this._endpointUrl}?foto=${value}`;
+    return value != null
+      ? `${this._endpointUrl}?foto=${value}`
+      : `${this._staticResourceUrl}/images/no-usuario.png`;
   }
 }
