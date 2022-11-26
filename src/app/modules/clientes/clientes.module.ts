@@ -14,7 +14,12 @@ import { ClienteDetailComponent } from './pages/cliente-detail/cliente-detail.co
 import { ProfilePhotoPipe } from './pipes/profile-photo.pipe';
 
 @NgModule({
-  declarations: [ClientesListComponent, ClienteFormComponent, ClienteDetailComponent, ProfilePhotoPipe],
+  declarations: [
+    ClientesListComponent,
+    ClienteFormComponent,
+    ClienteDetailComponent,
+    ProfilePhotoPipe,
+  ],
   imports: [
     CommonModule,
     ClientesRoutingModule,

@@ -1,11 +1,12 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { Observable, switchMap, EMPTY, map, Subscription } from 'rxjs';
+import { Subscription } from 'rxjs';
 import Swal from 'sweetalert2';
 
 import { Cliente } from '@core/models';
 import { ClienteService } from '@modules/clientes/services/cliente.service';
 import { ActivatedRoute } from '@angular/router';
 import { PaginatedResponse } from '@core/interfaces';
+import { ModalDetalleClienteService } from '@modules/clientes/services/modal-detalle-cliente.service';
 
 @Component({
   selector: 'app-clientes-list',
@@ -19,6 +20,7 @@ export class ClientesListComponent implements OnInit, OnDestroy {
 
   constructor(
     private _clienteService: ClienteService,
+    private _modalClienteService: ModalDetalleClienteService,
     private _route: ActivatedRoute
   ) {}
 
@@ -28,6 +30,16 @@ export class ClientesListComponent implements OnInit, OnDestroy {
         if (!page) {
           page = 0;
         }
+
+        this._clienteService.clientes$.subscribe((response) => {
+          this.clientes = this.clientes.map((clienteOriginal) => {
+            if (response.id == clienteOriginal.id) {
+              clienteOriginal.foto = response.foto;
+            }
+
+            return clienteOriginal;
+          });
+        });
 
         this._clienteService.getCustomers(page).subscribe((response) => {
           this.clientes = response.data;
@@ -61,6 +73,11 @@ export class ClientesListComponent implements OnInit, OnDestroy {
         );
       }
     });
+  }
+
+  openCustomerDetailModal(cliente: Cliente) {
+    this._modalClienteService.openModal();
+    this._modalClienteService.setCustomerModalData(cliente);
   }
 
   ngOnDestroy(): void {

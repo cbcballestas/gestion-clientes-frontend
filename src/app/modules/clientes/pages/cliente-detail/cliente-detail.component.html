@@ -1,48 +1,102 @@
-<div class="card bg-dark text-white my-2">
-  <div class="card-header">{{ titulo }}</div>
-  <div class="card-body">
-    <div class="container">
-      <div class="row">
-        <div class="col-sm">
-          <ul *ngIf="cliente" class="list-group list-group-flush mb-3">
-            <li class="list-group-item active">
-              {{ cliente.nombre }} {{ cliente.apellido }}
-            </li>
-            <li class="list-group-item">{{ cliente.email }}</li>
-            <li class="list-group-item">
-              {{ cliente.fechaNacimiento | date: "fullDate" }}
-            </li>
-          </ul>
+<!-- Modal -->
+<div
+  class="abir-modal animacion fadeIn"
+  *ngIf="modalDetalleClienteService.isModalOpened"
+>
+  <div
+    class="modal modal-lg"
+    id="exampleModal"
+    tabindex="-1"
+    aria-labelledby="exampleModalLabel"
+    aria-hidden="true"
+    style="display: block"
+  >
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h1 class="modal-title fs-5" id="exampleModalLabel">{{ titulo }}</h1>
+          <button
+            type="button"
+            class="btn-close"
+            (click)="closeCustomerDetailModal()"
+            data-bs-dismiss="modal"
+            aria-label="Close"
+          ></button>
+        </div>
+        <div class="modal-body">
+          <div class="container-fluid">
+            <div class="row">
+              <div class="col-sm">
+                <ul *ngIf="cliente" class="list-group list-group-flush mb-3">
+                  <li class="list-group-item active">
+                    {{ cliente.nombre }} {{ cliente.apellido }}
+                  </li>
+                  <li class="list-group-item">{{ cliente.email }}</li>
+                  <li class="list-group-item">
+                    {{ cliente.fechaNacimiento | date: "fullDate" }}
+                  </li>
+                </ul>
 
-          <div class="input-group mb-3">
-            <input
-              #foto
-              type="file"
-              accept="image/*"
-              (change)="onSelectFile()"
-              class="form-control"
-              id="inputGroupFile04"
-              aria-describedby="inputGroupFileAddon04"
-              aria-label="Upload"
-            />
-            <button
-              [disabled]="!archivoSeleccionado"
-              (click)="uploadProfilePhoto()"
-              class="btn btn-outline-secondary"
-              type="button"
-              id="inputGroupFileAddon04"
-            >
-              Subir
-            </button>
+                <div class="input-group mb-3">
+                  <input
+                    #foto
+                    type="file"
+                    accept="image/*"
+                    (change)="onSelectFile()"
+                    class="form-control"
+                    id="inputGroupFile04"
+                    aria-describedby="inputGroupFileAddon04"
+                    aria-label="Upload"
+                  />
+                  <button
+                    [disabled]="!archivoSeleccionado"
+                    (click)="uploadProfilePhoto()"
+                    class="btn btn-outline-secondary"
+                    type="button"
+                    id="inputGroupFileAddon04"
+                  >
+                    Subir
+                  </button>
+                </div>
+
+                <!-- Barra de progreso -->
+                <div
+                  class="progress mb-3"
+                  *ngIf="progreso > 0"
+                  style="height: 40px"
+                >
+                  <div
+                    class="progress-bar progress-bar-striped bg-success"
+                    role="progressbar"
+                    aria-label="Default striped example"
+                    [ngStyle]="{ width: progreso + '%' }"
+                    attr.aria-valuenow="{{ progreso }}"
+                    aria-valuemin="0"
+                    aria-valuemax="100"
+                  >
+                    {{ progreso }}%
+                  </div>
+                </div>
+              </div>
+              <div class="col-sm">
+                <img
+                  class="img-thumbnail img-fluid"
+                  src="{{ cliente?.foto | profilePhoto }}"
+                  alt="{{ cliente?.foto ?? 'Sin foto' }}"
+                />
+              </div>
+            </div>
           </div>
         </div>
-        <div class="col-sm">
-          <img
-            class="img-thumbnail"
-            *ngIf="cliente?.foto"
-            src="{{ cliente.foto | profilePhoto }}"
-            alt="{{ cliente.foto }}"
-          />
+        <div class="modal-footer">
+          <button
+            type="button"
+            (click)="closeCustomerDetailModal()"
+            class="btn btn-secondary"
+            data-bs-dismiss="modal"
+          >
+            Close
+          </button>
         </div>
       </div>
     </div>

@@ -1,7 +1,12 @@
 import { Injectable } from '@angular/core';
-import { Observable, EMPTY, catchError } from 'rxjs';
+import { Observable, EMPTY, catchError, Subject } from 'rxjs';
 import { Router } from '@angular/router';
-import { HttpClient, HttpParams } from '@angular/common/http';
+import {
+  HttpClient,
+  HttpEvent,
+  HttpParams,
+  HttpRequest,
+} from '@angular/common/http';
 import { environment } from 'src/environments/environment';
 import Swal from 'sweetalert2';
 
@@ -22,6 +27,9 @@ export class ClienteService {
     private _router: Router,
     private _formErrorService: FormErrorService
   ) {}
+
+  private clienteObservable: Subject<Cliente> = new Subject();
+  clientes$ = this.clienteObservable.asObservable();
 
   getCustomers(page: number): Observable<PaginatedResponse<Cliente>> {
     const params = new HttpParams().set('page', page);
@@ -104,27 +112,25 @@ export class ClienteService {
   uploadProfilePhoto(
     archivo: File,
     id: number
-  ): Observable<UploadedProfilePhotoDTO> {
-    let formData: FormData = new FormData();
-
+  ): Observable<HttpEvent<UploadedProfilePhotoDTO>> {
     // Se asignan los valores requeridos por el API
+    let formData: FormData = new FormData();
     formData.append('archivo', archivo);
     formData.append('id', '' + id);
 
-    return this._http
-      .post<UploadedProfilePhotoDTO>(
-        `${environment.API_URL}/clientes/upload`,
-        formData
-      )
-      .pipe(
-        catchError(({ error }: HttpErrorResponse) => {
-          Swal.fire({
-            icon: 'error',
-            title: 'Error',
-            text: `${error.mensaje}`,
-          });
-          return EMPTY;
-        })
-      );
+    const req = new HttpRequest(
+      'POST',
+      `${environment.API_URL}/clientes/upload`,
+      formData,
+      {
+        reportProgress: true,
+      }
+    );
+
+    return this._http.request<UploadedProfilePhotoDTO>(req);
+  }
+
+  notifiyCustomerList(cliente: Cliente): void {
+    this.clienteObservable.next(cliente);
   }
 }
