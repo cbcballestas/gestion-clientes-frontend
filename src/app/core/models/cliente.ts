@@ -1,3 +1,5 @@
+import { Region } from './region';
+
 export class Cliente {
   constructor(
     public id: number,
@@ -5,6 +7,7 @@ export class Cliente {
     public apellido: string,
     public email: string,
     public fechaNacimiento: string,
-    public foto?: string,
+    public region: Region | null,
+    public foto?: string
   ) {}
 }

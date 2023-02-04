@@ -1,12 +1,13 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { FormBuilder, Validators } from '@angular/forms';
+import { FormBuilder, FormControl, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { EMPTY, switchMap, Subscription } from 'rxjs';
+import { EMPTY, switchMap, Subscription, Observable } from 'rxjs';
 import Swal from 'sweetalert2';
 import * as moment from 'moment';
 
-import { Cliente } from '@core/models';
+import { Cliente, Region } from '@core/models';
 import { ClienteService } from '@modules/clientes/services/cliente.service';
+import { RegionesService } from '@core/services/regiones.service';
 
 @Component({
   selector: 'app-cliente-form',
@@ -16,6 +17,8 @@ export class ClienteFormComponent implements OnInit, OnDestroy {
   titulo: string = 'Nuevo Cliente';
   edicion: boolean = false;
   id!: number;
+
+  regiones$!: Observable<Region[]>;
 
   private _subscriptions$ = new Subscription();
 
@@ -33,12 +36,14 @@ export class ClienteFormComponent implements OnInit, OnDestroy {
         Validators.pattern('[A-Za-z0-9._%-]+@[A-Za-z0-9._%-]+\\.[a-z]{2,3}'),
       ],
     ],
-    fechaNacimiento: ['', [Validators.required],],
+    fechaNacimiento: ['', [Validators.required]],
+    region: new FormControl<Region | null>(null, [Validators.required]),
     foto: [undefined],
   });
 
   constructor(
     private _clienteService: ClienteService,
+    private _regionService: RegionesService,
     private _fb: FormBuilder,
     private _route: ActivatedRoute,
     private _router: Router
@@ -60,6 +65,15 @@ export class ClienteFormComponent implements OnInit, OnDestroy {
         }
       })
     );
+    this.regiones$ = this._regionService.getAllRegions();
+  }
+
+  compararRegion(o1: Region, o2: Region): boolean {
+    if (o1 === null && o2 === null) {
+      return true;
+    }
+
+    return o1 === null || o2 === null ? false : o1.id === o2.id;
   }
 
   procesar(): void {
@@ -116,6 +130,7 @@ export class ClienteFormComponent implements OnInit, OnDestroy {
       apellido: cliente.apellido,
       email: cliente.email,
       fechaNacimiento: cliente.fechaNacimiento,
+      region: cliente.region,
     });
   }
 
@@ -130,6 +145,10 @@ export class ClienteFormComponent implements OnInit, OnDestroy {
   }
   get fechaNacimiento() {
     return this.form.controls.fechaNacimiento;
+  }
+
+  get region() {
+    return this.form.controls.region;
   }
 
   ngOnDestroy(): void {
