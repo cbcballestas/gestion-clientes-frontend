@@ -32,6 +32,7 @@
                     {{ cliente.nombre }} {{ cliente.apellido }}
                   </li>
                   <li class="list-group-item">{{ cliente.email }}</li>
+                  <li class="list-group-item">{{ cliente.region?.nombre }}</li>
                   <li class="list-group-item">
                     {{ cliente.fechaNacimiento | date: "fullDate" }}
                   </li>

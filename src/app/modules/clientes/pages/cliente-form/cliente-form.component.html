@@ -61,6 +61,7 @@
         <div class="col-12">
           <input
             matInput
+            readonly
             [matDatepicker]="picker"
             formControlName="fechaNacimiento"
             class="form-control"
@@ -117,7 +118,35 @@
           </span>
         </div>
       </div>
-      <div class="col">
+
+      <div class="col-6">
+        <label class="form-label">Región:</label>
+        <select
+          class="form-select"
+          formControlName="region"
+          [compareWith]="compararRegion"
+          id="region"
+          [ngClass]="{
+            'ng-invalid ng-dirty is-invalid':
+              region.invalid && (region.dirty || region.touched)
+          }"
+          autocomplete="off"
+          required
+        >
+          <option [ngValue]="null">Seleccione región</option>
+          <option *ngFor="let region of regiones$ | async" [ngValue]="region">
+            {{ region.nombre }}
+          </option>
+        </select>
+
+        <div *ngIf="region.invalid && (region.dirty || region.touched)">
+          <span *ngIf="region.errors?.['required']" class="text-danger">
+            Debe seleccionar una región
+          </span>
+        </div>
+      </div>
+
+      <div class="col-12">
         <button
           type="button"
           class="btn btn-primary"
